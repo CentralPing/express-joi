@@ -1,0 +1,138 @@
+# @centralping/express-joi
+
+[![Build Status](https://travis-ci.org/CentralPing/express-joi.svg?branch=master)](https://travis-ci.org/CentralPing/express-joi)
+[![Coverage Status](https://coveralls.io/repos/github/CentralPing/express-joi/badge.svg)](https://coveralls.io/github/CentralPing/express-joi)
+[![Dependency Status](https://david-dm.org/CentralPing/express-joi.svg)](https://david-dm.org/CentralPing/express-joi)
+[![Greenkeeper Status](https://badges.greenkeeper.io/CentralPing/express-joi.svg)](https://greenkeeper.io/)
+[![Known Vulnerabilities](https://snyk.io/test/github/centralping/express-joi/badge.svg)](https://snyk.io/test/github/centralping/express-joi)
+
+A slightly opinionated Express middleware for validation with Joi.
+
+## Installation
+
+`npm i --save https://github.com/CentralPing/express-joi`
+
+## API Reference
+
+{{#module name="express-joi"~}}
+{{>body~}}
+{{>members~}}
+{{/module}}
+
+## Examples
+
+### For Simple Body Validation
+
+```js
+const express = require('express');
+const { body } = require('express-joi');
+
+const app = express();
+
+const schema = {
+  foo: Joi.number(),
+  bar: Joi.string()
+};
+const bodyMiddleware = body(schema);
+
+app.all('/', bodyMiddleware);
+
+/*
+POST (JSON) request -> '{"foo":1,"bar":"hello"}'
+res.locals would be set to: {body: {foo: 1, bar: 'hello'}}
+
+POST (JSON) request -> '{"foo":"hello","bar":1}'
+Error object would be a Boom error for a bad request with a message of '"foo" must be a number'
+
+POST (FORM) request -> 'foo=1&bar=hello'
+res.locals would be set to: {body: {foo: 1, bar: 'hello'}}
+
+POST (FORM) request -> 'foo=hello&bar=1'
+Error object would be a Boom error for a bad request with a message of '"foo" must be a number'
+*/
+```
+
+### For Simple Param Validation
+
+```js
+const express = require('express');
+const { params } = require('express-joi');
+
+const app = express();
+
+const schema = {
+  foo: Joi.number(),
+  bar: Joi.string()
+};
+const paramsMiddleware = params(schema);
+
+app.all('/:foo/:bar', paramsMiddleware);
+
+/*
+GET request -> /1/hello
+res.locals would be set to: {params: {foo: 1, bar: 'hello'}}
+
+GET request -> /hello/1
+Error object would be a Boom error for a bad request with a message of '"foo" must be a number'
+*/
+```
+
+### For Simple Query Validation
+
+```js
+const express = require('express');
+const { query } = require('express-joi');
+
+const app = express();
+
+const schema = {
+  foo: Joi.number(),
+  bar: Joi.string()
+};
+const queryMiddleware = query(schema);
+
+app.all('/', queryMiddleware);
+
+/*
+GET request -> ?foo=1&bar=hello
+res.locals would be set to: {query: {foo: 1, bar: 'hello'}}
+
+GET request -> ?foo=hello&bar=1
+Error object would be a Boom error for a bad request with a message of '"foo" must be a number'
+*/
+```
+
+### For Custom Validation
+
+```js
+const express = require('express');
+const { validate } = require('express-joi');
+
+const app = express();
+
+const schema = {
+  foo: Joi.number(),
+  bar: Joi.string()
+};
+const validateMiddleware = validate(schema, {stripUnknown: false}, {
+  readFrom: 'query',
+  writeTo: 'validated'
+});
+
+app.all('/', validateMiddleware);
+
+/*
+GET request -> ?foo=1&bar=hello
+res.locals would be set to: {validated: {foo: 1, bar: 'hello'}}
+
+GET request -> ?foo=hello&bar=1
+Error object would be a Boom error for a bad request with a message of '"foo" must be a number'
+
+GET request -> ?foo=1&bar=hello&far=true
+Error object would be a Boom error for a bad request with a message of '"far" is not allowed'
+*/
+```
+
+## License
+
+MIT
