@@ -1,4 +1,4 @@
-# @centralping/express-joi
+# @CentralPing/express-joi
 
 [![Build Status](https://travis-ci.org/CentralPing/express-joi.svg?branch=master)](https://travis-ci.org/CentralPing/express-joi)
 [![Coverage Status](https://coveralls.io/repos/github/CentralPing/express-joi/badge.svg)](https://coveralls.io/github/CentralPing/express-joi)
