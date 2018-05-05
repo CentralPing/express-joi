@@ -21,8 +21,9 @@
     "url": "https://github.com/CentralPing/express-joi"
   },
   "keywords": [
-    "list",
-    "pagination"
+    "express",
+    "validation",
+    "joi"
   ],
   "author": "Jason Cust <jason@centralping.com>",
   "license": "MIT",
